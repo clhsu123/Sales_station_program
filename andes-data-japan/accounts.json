@@ -1,0 +1,12 @@
+{
+  "accounts": [
+    {
+      "id": "demo-account",
+      "name": "Demo Meridian JP",
+      "group": "active",
+      "notes": "Synthetic fixture",
+      "archived": false
+    }
+  ],
+  "forecastUnmatched": []
+}

@@ -1,0 +1,51 @@
+{
+  "id": "fae-demo",
+  "kind": "fae",
+  "name": "Demo architecture",
+  "company": "",
+  "customer": "",
+  "schema": 3,
+  "rev": 1,
+  "created": 1,
+  "updated": 1,
+  "lang": "en",
+  "settings": {
+    "theme": "midnight-amber",
+    "confidential": true,
+    "tagline": {
+      "en": "Taking RISC-V® Mainstream",
+      "ko": "Taking RISC-V® Mainstream"
+    },
+    "pageNumbers": true
+  },
+  "facts": [],
+  "deck": {
+    "slides": [
+      {
+        "id": "fae-demo-page",
+        "layout": "canvas",
+        "notes": {
+          "en": "",
+          "ko": ""
+        },
+        "data": {
+          "title": {
+            "en": "Demo architecture",
+            "ko": ""
+          },
+          "subtitle": {
+            "en": "Synthetic testing fixture",
+            "ko": ""
+          },
+          "objs": []
+        }
+      }
+    ]
+  },
+  "section": "demo",
+  "group": "demo",
+  "faeVer": 1,
+  "curated": [
+    "fae-demo-page"
+  ]
+}

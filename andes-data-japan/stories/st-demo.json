@@ -1,0 +1,57 @@
+{
+  "id": "st-demo",
+  "kind": "story",
+  "name": "Demo customer story",
+  "company": "Demo Meridian JP",
+  "customer": "Demo Meridian JP",
+  "schema": 3,
+  "rev": 1,
+  "created": 1,
+  "updated": 1,
+  "lang": "en",
+  "settings": {
+    "theme": "midnight-amber",
+    "confidential": true,
+    "tagline": {
+      "en": "Taking RISC-V® Mainstream",
+      "ko": "Taking RISC-V® Mainstream"
+    },
+    "pageNumbers": true
+  },
+  "facts": [],
+  "deck": {
+    "slides": [
+      {
+        "id": "st-demo-page",
+        "layout": "canvas",
+        "notes": {
+          "en": "",
+          "ko": ""
+        },
+        "data": {
+          "title": {
+            "en": "Demo customer story",
+            "ko": ""
+          },
+          "subtitle": {
+            "en": "Synthetic testing fixture",
+            "ko": ""
+          },
+          "objs": []
+        }
+      }
+    ]
+  },
+  "storyVer": 2,
+  "application": "Edge AI",
+  "ip": "Demo Core",
+  "labels": {
+    "app": [
+      "Edge AI"
+    ],
+    "ip": [
+      "Demo Core"
+    ],
+    "region": []
+  }
+}

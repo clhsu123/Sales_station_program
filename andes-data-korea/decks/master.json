@@ -1,0 +1,318 @@
+{
+  "id": "master",
+  "kind": "master",
+  "name": "Master sales deck",
+  "company": "",
+  "status": "",
+  "tags": [],
+  "created": 1,
+  "updated": 1,
+  "lang": "en",
+  "schema": 3,
+  "settings": {
+    "theme": "midnight-amber",
+    "confidential": true,
+    "tagline": {
+      "en": "Taking RISC-V® Mainstream",
+      "ko": "Taking RISC-V® Mainstream"
+    },
+    "pageNumbers": true
+  },
+  "facts": [],
+  "deck": {
+    "slides": [
+      {
+        "id": "s5o41kfx1awo",
+        "layout": "cover",
+        "notes": {
+          "en": "",
+          "ko": ""
+        },
+        "data": {
+          "title": {
+            "en": "Demo sales briefing",
+            "ko": ""
+          },
+          "subtitle": {
+            "en": "{{company}}",
+            "ko": ""
+          },
+          "date": {
+            "en": "{{meeting_date}}",
+            "ko": ""
+          },
+          "note": {
+            "en": "Synthetic example",
+            "ko": ""
+          },
+          "blocks": {},
+          "objs": []
+        }
+      },
+      {
+        "id": "s7wnao41x6oy",
+        "layout": "overview",
+        "notes": {
+          "en": "",
+          "ko": ""
+        },
+        "data": {
+          "title": {
+            "en": "Demo company overview",
+            "ko": ""
+          },
+          "pillars": [],
+          "people": [],
+          "groups": [],
+          "stats": [],
+          "whoTitle": {
+            "en": "",
+            "ko": ""
+          },
+          "hqCaption": {
+            "en": "",
+            "ko": ""
+          },
+          "offices": {
+            "en": "",
+            "ko": ""
+          },
+          "rolesTitle": {
+            "en": "",
+            "ko": ""
+          },
+          "rviText": {
+            "en": "",
+            "ko": ""
+          },
+          "factsTitle": {
+            "en": "",
+            "ko": ""
+          },
+          "blocks": {},
+          "objs": []
+        },
+        "link": {
+          "fae": "overview"
+        }
+      },
+      {
+        "id": "sibaqmeirod",
+        "layout": "bullets",
+        "notes": {
+          "en": "",
+          "ko": ""
+        },
+        "data": {
+          "title": {
+            "en": "Meeting agenda",
+            "ko": ""
+          },
+          "body": {
+            "en": "<ul><li>Review requirements</li><li>Agree on a next step</li></ul>",
+            "ko": ""
+          },
+          "logos": [],
+          "blocks": {},
+          "objs": []
+        }
+      },
+      {
+        "id": "sbdtggpao7mm",
+        "layout": "worldmap",
+        "notes": {
+          "en": "",
+          "ko": ""
+        },
+        "data": {
+          "title": {
+            "en": "Demo regions",
+            "ko": ""
+          },
+          "map": "",
+          "pins": [],
+          "callouts": [],
+          "subtitle": {
+            "en": "",
+            "ko": ""
+          },
+          "blocks": {},
+          "objs": []
+        }
+      },
+      {
+        "id": "sa1vslgir73r",
+        "layout": "closing",
+        "notes": {
+          "en": "",
+          "ko": ""
+        },
+        "data": {
+          "title": {
+            "en": "Thank you",
+            "ko": ""
+          },
+          "name": {
+            "en": "",
+            "ko": ""
+          },
+          "company": {
+            "en": "",
+            "ko": ""
+          },
+          "showQr": false,
+          "subtitle": {
+            "en": "",
+            "ko": ""
+          },
+          "role": {
+            "en": "",
+            "ko": ""
+          },
+          "blocks": {},
+          "objs": [],
+          "cards": [
+            {
+              "name": {
+                "en": "",
+                "ko": ""
+              },
+              "role": {
+                "en": "",
+                "ko": ""
+              },
+              "company": {
+                "en": "",
+                "ko": ""
+              },
+              "email": "",
+              "phone": "",
+              "web": ""
+            }
+          ]
+        }
+      },
+      {
+        "id": "mwu46bgsti2ag",
+        "layout": "ecohub",
+        "notes": {
+          "en": "",
+          "ko": ""
+        },
+        "data": {
+          "title": {
+            "en": "Demo ecosystem",
+            "ko": ""
+          },
+          "hub": {
+            "en": "Demo",
+            "ko": ""
+          },
+          "sel": -1,
+          "spokes": [
+            {
+              "pos": "top",
+              "icon": "isa",
+              "name": {
+                "en": "Example core",
+                "ko": ""
+              },
+              "cat": {
+                "en": "Architecture",
+                "ko": ""
+              },
+              "text": {
+                "en": "Fictional training material",
+                "ko": ""
+              }
+            }
+          ],
+          "blocks": {},
+          "objs": []
+        },
+        "link": {
+          "fae": "tools"
+        }
+      },
+      {
+        "id": "mwu46bgr2h6td",
+        "layout": "naming",
+        "notes": {
+          "en": "Keep it light: “Before the lineup, a 30-second decoder ring. Once you know a few letters, the whole chart reads itself.”\nClick AX45MPV: A = application processor (Linux), X = 64-bit, 45 = the series, MP = multicore, V = vector.\nInvite them to pick a name they know (e.g. D25F-SE) and decode it together.\nStress: the number names a series, not pipeline depth, clock speed or core count. FPU precision, VLEN/DLEN, cache size and ASIL are confirmed per model and configuration.",
+          "ko": ""
+        },
+        "data": {
+          "title": {
+            "en": "How to read an AndesCore™ name",
+            "ko": "AndesCore™ 제품명 읽는 법"
+          },
+          "lead": {
+            "en": "Prefixes set the role. Suffixes flag features.",
+            "ko": "접두어는 역할을, 접미어는 기능을 나타냅니다."
+          },
+          "inputLabel": {
+            "en": "Enter or select a model",
+            "ko": "모델명을 입력하거나 선택하십시오"
+          },
+          "steps": [
+            {
+              "t": {
+                "en": "Identify the N / A / D role",
+                "ko": "N / A / D 역할 확인"
+              }
+            },
+            {
+              "t": {
+                "en": "Read X for 32 / 64-bit",
+                "ko": "X로 32 / 64비트 확인"
+              }
+            },
+            {
+              "t": {
+                "en": "Check series &amp; configuration",
+                "ko": "시리즈 및 구성 확인"
+              }
+            }
+          ],
+          "model": "AX45MPV",
+          "tok": 0,
+          "view": "breakdown",
+          "showSource": true,
+          "blocks": {},
+          "objs": []
+        },
+        "link": {
+          "fae": "lineup"
+        }
+      }
+    ]
+  },
+  "naming": {
+    "tokens": [
+      {
+        "k": "A",
+        "g": "role",
+        "t": {
+          "en": "Demo family"
+        },
+        "d": {
+          "en": "Fictional example"
+        }
+      }
+    ],
+    "models": [
+      "A25"
+    ],
+    "groups": {},
+    "upcoming": []
+  },
+  "namingSlideAdded": true,
+  "ecoSlideAdded": true,
+  "presenters": [],
+  "v4fix": {
+    "l2": true,
+    "links": true,
+    "links2": true
+  },
+  "bootstrapMaster": false
+}

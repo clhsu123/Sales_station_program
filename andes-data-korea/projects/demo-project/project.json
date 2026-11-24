@@ -1,0 +1,54 @@
+{
+  "id": "demo-project",
+  "accountId": "demo-account",
+  "customer": "Demo Meridian KR",
+  "endCustomer": "",
+  "name": "Demo controller evaluation",
+  "application": "",
+  "cores": "Demo Core",
+  "foundry": "",
+  "competitor": "",
+  "stage": "S2",
+  "lastTstage": "S2",
+  "dealStatus": "active",
+  "stageNote": "",
+  "health": "",
+  "probability": null,
+  "statusLine": "Fictional evaluation",
+  "summary": "",
+  "lastContactAt": "",
+  "nextSteps": [
+    {
+      "id": "demo-task",
+      "text": "Review the sample test plan",
+      "owner": "Demo owner",
+      "due": "",
+      "done": false,
+      "showToBoss": false
+    }
+  ],
+  "buying": {
+    "need": "unknown",
+    "budget": "unknown",
+    "decisionMaker": "unknown",
+    "procurement": "unknown",
+    "po": "unknown"
+  },
+  "blocker": "",
+  "blockerOwner": "",
+  "topTier": false,
+  "commercial": {
+    "licenseFee": "",
+    "currency": "USD",
+    "royaltyModel": "",
+    "royaltyRate": "",
+    "paymentTerms": ""
+  },
+  "milestones": [],
+  "contacts": [],
+  "agreements": [],
+  "forecast": [],
+  "layout": null,
+  "updatedAt": "2026-11-24T03:07:23.607Z",
+  "rev": 0
+}

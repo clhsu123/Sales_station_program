@@ -1,0 +1,165 @@
+{
+  "schema": 2,
+  "stages": [
+    {
+      "id": "S0",
+      "name": "Lead",
+      "nameKo": "리드",
+      "exit": "Contact made, need identified",
+      "exitKo": "접촉 및 요구 사항 확인",
+      "terminal": false
+    },
+    {
+      "id": "S1",
+      "name": "NDA/Eval",
+      "nameKo": "NDA/평가",
+      "exit": "NDA signed, evaluation package sent",
+      "exitKo": "NDA 체결 및 평가 패키지 전달",
+      "terminal": false
+    },
+    {
+      "id": "S2",
+      "name": "Tech eval",
+      "nameKo": "기술 평가",
+      "exit": "Customer evaluating cores / benchmarks",
+      "exitKo": "고객이 코어와 벤치마크를 평가 중",
+      "terminal": false
+    },
+    {
+      "id": "S3",
+      "name": "Proposal",
+      "nameKo": "제안",
+      "exit": "Quotation or business proposal sent",
+      "exitKo": "견적 또는 사업 제안서 전달",
+      "terminal": false
+    },
+    {
+      "id": "S4",
+      "name": "Negotiation",
+      "nameKo": "협상",
+      "exit": "Core selected, contract terms in redline",
+      "exitKo": "코어 선정 및 계약 조건 협의 중",
+      "terminal": false
+    },
+    {
+      "id": "S5",
+      "name": "IPLA signed",
+      "nameKo": "IPLA 체결",
+      "exit": "IPLA or addendum signed, RTL released",
+      "exitKo": "IPLA 또는 부속 계약 체결, RTL 제공",
+      "terminal": false
+    },
+    {
+      "id": "S6",
+      "name": "Design-in",
+      "nameKo": "디자인 인",
+      "exit": "Integration and SoC design in progress",
+      "exitKo": "통합 및 SoC 설계 진행 중",
+      "terminal": false
+    },
+    {
+      "id": "S7",
+      "name": "Tape-out",
+      "nameKo": "테이프아웃",
+      "exit": "MPW or tape-out done",
+      "exitKo": "MPW 또는 Tape-out 완료",
+      "terminal": false
+    },
+    {
+      "id": "S8",
+      "name": "MP/Royalty",
+      "nameKo": "양산/로열티",
+      "exit": "Mass production, royalty reports",
+      "exitKo": "양산 및 로열티 보고",
+      "terminal": false
+    }
+  ],
+  "health": {
+    "noContactDays": 30,
+    "quietDays": 14,
+    "overdueDays": 7,
+    "overdueRedDays": 21,
+    "slipRedDays": 90,
+    "riskDays": 14,
+    "noNextStep": true
+  },
+  "top5": [],
+  "reportModules": {
+    "kpis": true,
+    "moves": true,
+    "top": true,
+    "updates": true,
+    "risks": true,
+    "next": true,
+    "commercial": false
+  },
+  "cards": [
+    {
+      "id": "status",
+      "visible": true,
+      "optIn": false,
+      "order": 0
+    },
+    {
+      "id": "buying",
+      "visible": true,
+      "optIn": false,
+      "order": 1
+    },
+    {
+      "id": "blocker",
+      "visible": true,
+      "optIn": false,
+      "order": 2
+    },
+    {
+      "id": "accountNotes",
+      "visible": true,
+      "optIn": false,
+      "order": 3
+    },
+    {
+      "id": "summary",
+      "visible": true,
+      "optIn": false,
+      "order": 4
+    },
+    {
+      "id": "commercial",
+      "visible": true,
+      "optIn": false,
+      "order": 5
+    },
+    {
+      "id": "milestones",
+      "visible": true,
+      "optIn": false,
+      "order": 6
+    },
+    {
+      "id": "contacts",
+      "visible": false,
+      "optIn": false,
+      "order": 7
+    },
+    {
+      "id": "agreements",
+      "visible": true,
+      "optIn": false,
+      "order": 8
+    },
+    {
+      "id": "forecast",
+      "visible": true,
+      "optIn": false,
+      "order": 9
+    },
+    {
+      "id": "history",
+      "visible": true,
+      "optIn": false,
+      "order": 10
+    }
+  ],
+  "region": "japan"
+}
