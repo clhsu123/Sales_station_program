@@ -1,3 +1,23 @@
+## What is Sales Station?
+
+Sales Station is a local workspace for technical sales. Use it to track customer opportunities, prepare meeting decks, and follow up after meetings.
+
+- **Home and Pipeline** show what’s due and where each opportunity stands.
+- **Projects** keeps the latest discussion, next action, owner, and due date together.
+- **Decks and Success stories** let you build a customer presentation from a Master deck and insert editable example slides.
+- **Boss report** brings together updates you’ve marked for your manager.
+
+## Try it in 10 minutes
+
+1. On GitHub, select **Code → Download ZIP**. Extract the ZIP to a regular folder, then open `index.html` in desktop Chrome or Edge.
+2. For this demo, select **KR Korea → Link folder…** and choose `andes-data-korea` inside your extracted copy. For Japan, select **JP Japan** and choose `andes-data-japan`.
+3. Open **Accounts** and find **Demo Meridian KR** or **Demo Meridian JP**. Open the sample project and use **Update progress** to record a fictional next step.
+4. Go to **Decks → New customer** and start from the Master deck. In **Add slide → Success stories**, preview and insert a sample page. Edit its title in your deck.
+5. Open **Boss report** to see how updates marked for your manager appear in the weekly report.
+
+## Where your data lives
+
+AI helped build the program. This GitHub repository contains the program and fictional test data. Sales Station runs on your computer. For real sales work, link your approved local workspace folder and keep live records there.
 # Sales Station
 
 Run index.html in desktop Chrome or Edge. The two andes-data folders in this
