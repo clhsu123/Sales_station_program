@@ -2238,7 +2238,7 @@ const S = APP.S = { cases: [], images: new Map(), meta: {}, current: null, sel: 
 APP.getCase = id => S.cases.find(c => c.id === id);
 APP.imgSrc = function(ref){
   if(!ref) return '';
-  if(ref.startsWith('a:') || ref.startsWith('u:')) return S.images.get(ref.slice(2)) || ASSETS[ref.slice(2)] || '';
+  if(ref.startsWith('a:') || ref.startsWith('u:')) return S.images.get(ref.slice(2)) || APP.publishedImages?.[ref.slice(2)] || ASSETS[ref.slice(2)] || '';
   return ref;
 };
 const imgSrc = APP.imgSrc;
@@ -4478,6 +4478,40 @@ APP.pdfDialog = function(c, lang){
 };
 
 /* ================= INIT ================= */
+async function loadPublishedLibrary(){
+  const data = await new Promise(resolve => {
+    const script = document.createElement('script');
+    script.src = 'shared-library/' + APP.region() + '.js';
+    script.onload = () => resolve(window.ANDES_SHARED_LIBRARY);
+    script.onerror = () => resolve(null);
+    document.head.append(script);
+  });
+  if(!data) return;
+  APP.publishedImages = data.images;
+  Object.assign(window.ANDES_ASSETS, data.images);
+  APP.publishedCaseIds = new Set(data.cases.map(c => c.id));
+  const previous = S.meta.publishedCaseVersions || {};
+  const versions = {};
+  for(const published of data.cases){
+    const current = APP.getCase(published.id);
+    const baseline = previous[published.id];
+    // Preserve browser edits against the Git version on which they began.
+    if(current && ((baseline && (current.updated || 0) !== baseline.updated) ||
+        (!baseline && !current.bootstrapMaster && (current.updated || 0) > (published.updated || 0)))){
+      versions[published.id] = baseline || { revision:published.publishedRevision, updated:published.updated || 0 };
+      continue;
+    }
+    if(!current || baseline?.revision !== published.publishedRevision){
+      S.cases = S.cases.filter(c => c.id !== published.id);
+      S.cases.push(published);
+      await APP.DB.put('cases', published);
+    }
+    versions[published.id] = { revision:published.publishedRevision, updated:published.updated || 0 };
+  }
+  await APP.setMeta('publishedCaseVersions', versions);
+  if(data.labels && !S.meta.storyLabels) S.meta.storyLabels = data.labels;
+}
+
 APP.init = async function(){
   await APP.DB.open();
   try {
@@ -4485,6 +4519,7 @@ APP.init = async function(){
     S.cases = cases || []; S.imageNames = {}; (images || []).forEach(i => { S.images.set(i.id, i.data); S.imageNames[i.id] = i.name; });
     (meta || []).forEach(m => S.meta[m.id] = m.v);
   } catch(e){ console.error(e); }
+  await loadPublishedLibrary();
   if(!APP.master()){ const m = APP.makeMaster(); m.bootstrapMaster = true; S.cases.push(m); await APP.DB.put('cases', m); }
   // built-in sample cases (Korea trip): inserted once per id, never overwrite edits, never re-create deleted ones
   if(APP.seedCases){ try { await APP.seedCases(); } catch(e){ console.error('seed', e); } }
@@ -6711,8 +6746,8 @@ const FS = APP.FS = {
       // decks + kb (FAE) + stories: newer copy wins; both changed since the last sync → ask
       const files = new Map();
       for(const dir of ['decks', 'kb', 'stories']) for(const e of await this.list(dir)) if(e.kind === 'file' && e.name.endsWith('.json') && !e.name.startsWith('.') && !(dir === 'stories' && e.name.startsWith('_'))){
-        const c = await this.readJSON(dir + '/' + e.name); if(c && c.id && c.deck) files.set(c.id, c); }
-      for(const c of S.cases.slice()){ const f = files.get(c.id); files.delete(c.id); const ls = lastSync[c.id] || 0;
+        const c = await this.readJSON(dir + '/' + e.name); if(c && c.id && c.deck && !APP.publishedCaseIds?.has(c.id)) files.set(c.id, c); }
+      for(const c of S.cases.slice()){ if(APP.publishedCaseIds?.has(c.id)) continue; const f = files.get(c.id); files.delete(c.id); const ls = lastSync[c.id] || 0;
         if(c.kind === 'master' && c.bootstrapMaster){
           if(f){ Object.assign(c, f); delete c.bootstrapMaster; await DB.put('cases', c); loaded++; continue; }
           const initial = Object.assign({}, c);
@@ -6832,11 +6867,11 @@ const FS = APP.FS = {
 const _put = DB.put.bind(DB), _del = DB.del.bind(DB);
 DB.put = async function(store, obj){ const r = await _put(store, obj);
   if(FS.dir && !FS.syncing && obj){
-    if(store === 'cases'){ await FS.write(FS.casePath(obj), obj); (S.meta.fsSync = S.meta.fsSync || {})[obj.id] = obj.updated || 0; }
+    if(store === 'cases' && !APP.publishedCaseIds?.has(obj.id)){ await FS.write(FS.casePath(obj), obj); (S.meta.fsSync = S.meta.fsSync || {})[obj.id] = obj.updated || 0; }
     else if(store === 'images') await FS.write(FS.imgPath(obj.id), obj); }
   return r; };
 DB.del = async function(store, id){ const c = store === 'cases' ? S.cases.find(x => x.id === id) || null : null; const r = await _del(store, id);
-  if(FS.dir && store === 'cases'){ const path = c ? FS.casePath(c) : ((id.startsWith('fae-') ? 'kb/' : (id.startsWith('st-') || id.startsWith('st')) ? 'stories/' : 'decks/') + id + '.json');
+  if(FS.dir && store === 'cases' && !APP.publishedCaseIds?.has(id)){ const path = c ? FS.casePath(c) : ((id.startsWith('fae-') ? 'kb/' : (id.startsWith('st-') || id.startsWith('st')) ? 'stories/' : 'decks/') + id + '.json');
     const old = await FS.read(path); if(old != null) await FS.write(`_backup/deleted/${id}-${Date.now()}.json`, old).catch(() => {});
     await FS.remove(path).catch(() => {}); FS.log('delete', path, 'copy kept in _backup/deleted/'); }
   return r; };
@@ -8983,7 +9018,7 @@ ST.saveCatalog = async function(){
   ST.catalog = data;
   try { await APP.setMeta(META, data); } catch(e){ S.meta[META] = data; }
   const FS = APP.FS;
-  if(FS && FS.dir) await FS.write(PATH, data).catch(e => console.error('labels save', e));
+  if(FS && FS.dir && !APP.publishedCaseIds) await FS.write(PATH, data).catch(e => console.error('labels save', e));
   return data;
 };
 
@@ -8994,7 +9029,7 @@ ST.ensureCatalog = async function(opts){
   let file = null;
   if(FS && FS.dir) file = await FS.readJSON(PATH).catch(() => null);
   const meta = S.meta[META];
-  let cat = ST.normalizeCatalog(file) || ST.normalizeCatalog(meta);
+  let cat = ST.normalizeCatalog(APP.publishedCaseIds ? meta : file) || ST.normalizeCatalog(meta);
   let born = false;
   if(!cat || emptyCat(cat)){ cat = seedCatalog(); born = true; }
   const merged = mergeStoryValues(cat);
