@@ -308,7 +308,7 @@ label.f{display:block;font-size:12px;color:var(--mute);margin:10px 0 4px;font-we
 .role .imgslot{width:44px;height:44px;border-radius:50%;flex:none;background-size:cover}
 .role b{display:block;font-size:16px;color:var(--navy)}
 .tgs{display:flex;flex-direction:column;gap:6px}
-.tg{background:var(--sky);border-left:4px solid var(--blue);padding:5px 10px;border-radius:4px;font-size:15px;color:var(--navy2)}
+.overview-task-group{background:var(--sky);border-left:4px solid var(--blue);padding:5px 10px;border-radius:4px;font-size:15px;color:var(--navy2)}
 .rvi{display:flex;align-items:center;gap:12px;font-size:18px;font-weight:600;margin-bottom:10px}
 .rvi .imgslot{width:48px;height:48px;background-color:transparent}
 .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 18px}
@@ -456,7 +456,7 @@ html[lang=ko] body{word-break:keep-all}
 .slide[data-theme] .ft .pg{color:var(--t-pg)}
 .slide[data-theme] .ft .conf{background:var(--t-confbg,#214A72);color:var(--t-conffg,#fff)}
 .slide[data-theme] .ovh{border-bottom-color:var(--t-rule)}
-.slide[data-theme] .tg{border-left-color:var(--t-chipline)}
+.slide[data-theme] .overview-task-group{border-left-color:var(--t-chipline)}
 .slide[data-theme] .stat,.slide[data-theme] .L-twocol .col{background:var(--t-card);border-color:var(--t-cardline)}
 .slide[data-theme] .scard .sh,.slide[data-theme] .rm th,.slide[data-theme] .stbl tr.hd td{background:#162E7A;color:#fff}
 .slide[data-theme] .scard:nth-child(5n+2) .sh{background:#214A72}
@@ -2506,7 +2506,7 @@ L.overview = { name:'Company overview', desc:'Who we are, RVI roles and quick fa
   render(ctx, s){ const d = s.data;
     const pills = (d.pillars || []).map((p, i) => `<div class="pill">${p.icon ? `<div class="pic img" style="background-image:url('${imgSrc(p.icon)}')" ${ctx.edit ? `data-img="pillars.${i}.icon"` : ''}></div>` : `<div class="pic">${esc(p.badge || '')}</div>`}${E2(ctx, d, `pillars.${i}.text`, '', 'Text')}</div>`).join('');
     const people = (d.people || []).map((p, i) => `<div class="role">${IMG(ctx, d, `people.${i}.photo`)}<div>${E2(ctx, d, `people.${i}.name`, '', 'Name', 'b')}${E2(ctx, d, `people.${i}.role`, '', 'Role')}</div></div>`).join('');
-    const groups = (d.groups || []).map((g, i) => E2(ctx, d, `groups.${i}.text`, 'tg', 'Task group')).join('');
+    const groups = (d.groups || []).map((g, i) => E2(ctx, d, `groups.${i}.text`, 'overview-task-group', 'Task group')).join('');
     const facts = (d.stats || []).map((st, i) => `<div class="fact" style="--c:${st.color || STAT_COLORS[i % 6]}">${E2(ctx, d, `stats.${i}.value`, 'v', '0')}${E2(ctx, d, `stats.${i}.label`, 'l', 'Label')}</div>`).join('');
     return stdFrame(ctx, s, `<div class="ov">
       <div>${E2(ctx, d, 'whoTitle', 'ovh', 'Heading')}<div class="row" style="align-items:flex-start;gap:18px"><div class="pillars" style="flex:1">${pills}</div>
