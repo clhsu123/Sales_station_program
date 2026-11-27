@@ -761,6 +761,18 @@ html[lang=ko] body{word-break:keep-all}
 .nm-card p{margin:0;font-size:16.5px;line-height:1.45;color:#2B3754}
 .nm-card p.nm-opt{font-size:14.5px;color:#4A5873}
 .nm-card.empty{justify-content:center;text-align:center}
+.nm-feature-list .nt{cursor:default}
+.nm-feature-list .nt:hover{transform:none}
+.nm-feature-card{min-height:0;padding:17px 18px}
+.nm-feature-card .nm-cg{color:var(--nm-feat-l)}
+.nm-feature-rows{display:flex;flex-direction:column;min-height:0;overflow:auto;margin:0;padding:0;list-style:none}
+.nm-feature-row{padding:11px 0}
+.nm-feature-row:first-child{padding-top:0}
+.nm-feature-row+.nm-feature-row{border-top:1px solid #e4dccb}
+.nm-feature-row .nm-ch{gap:9px;margin-bottom:5px}
+.nm-feature-row .nm-badge{min-width:40px;height:36px;font-size:16px;border-radius:9px}
+.nm-feature-row .nm-ch b{font-size:19px;overflow-wrap:anywhere}
+.nm-feature-row p{font-size:15px;line-height:1.35}
 .nm-src{margin-top:auto;font-size:13.5px;font-weight:600;color:#0A5596;text-decoration:none;border-top:1px solid #E4DCCB;padding-top:10px}
 .nm-src:hover{text-decoration:underline}
 .nm-pick{font-size:13px;color:var(--nm-mut);text-align:center}
@@ -2845,12 +2857,12 @@ function tileLayout(labels, bigs, W, opts){
   const w = need.map(x => x * k); return { g, w, lf: 8 * k, ls: 0, bf: w.map((x, i) => Math.max(8, (x - pad) / bu[i])) };
 }
 const tileW = { slide: 372, pop: 528 };
-function tilesHTML(p, sel, lang, W){
+function tilesHTML(p, sel, lang, W, interactive = true){
   const n = Math.max(1, p.toks.length);
   const lab = p.toks.map(t => TT(lang, t.g)), big = p.toks.map(t => t.implied ? TT(lang, 'noX') : (t.opt ? '(' + t.text + ')' : t.text));
   const L = tileLayout(lab, big, W || tileW.slide, { imp: p.toks.map(t => !!t.implied), unk: p.toks.map(t => t.g === 'unk') });
   const h = Math.round(Math.max(84, Math.min(112, 112 - (n - 5) * 9)));
-  return `<div class="nm-tiles" style="--n:${n};gap:${L.g}px">${p.toks.map((t, i) => `<div class="nt g-${t.g}${t.implied ? ' imp' : ''}${t.opt ? ' opt' : ''}${i === sel ? ' sel' : ''}" data-nm-tile="${i}" role="button" tabindex="0" aria-pressed="${i === sel}" aria-label="${esc(lab[i] + ': ' + big[i])}" style="flex:0 0 ${L.w[i].toFixed(1)}px;height:${h}px">
+  return `<div class="nm-tiles" style="--n:${n};gap:${L.g}px">${p.toks.map((t, i) => `<div class="nt g-${t.g}${t.implied ? ' imp' : ''}${t.opt ? ' opt' : ''}${i === sel ? ' sel' : ''}" ${interactive ? `data-nm-tile="${i}" role="button" tabindex="0" aria-pressed="${i === sel}" aria-label="${esc(lab[i] + ': ' + big[i])}"` : ''} style="flex:0 0 ${L.w[i].toFixed(1)}px;height:${h}px">
     <b class="notr" style="font-size:${L.bf[i].toFixed(1)}px">${esc(big[i])}</b><i style="font-size:${L.lf.toFixed(2)}px;letter-spacing:${L.ls}em">${esc(lab[i])}</i></div>`).join('')}</div>`;
 }
 /* ---- lineup matrix (derived from the case's model list + series groups) ---- */
@@ -2895,13 +2907,30 @@ function matrixHTML(nm, model, lang){
   const dense = other.length > 0 || (nm.models || []).length > 38;
   return `<div class="nm-mx${dense ? ' dense' : ''}" role="grid" aria-label="${esc(TT(lang, 'mxLabel'))}">${h}</div>`;
 }
+const sourceHTML = lang => `<a class="nm-src" href="https://www.andestech.com" target="_blank" rel="noopener">${esc(TT(lang, 'src'))} <span class="notr">· andestech.com</span></a>`;
 function detailHTML(p, sel, nm, lang, showSrc){
   const t = p.toks[sel]; const f = info(t, nm, lang);
   if(!f) return `<div class="nm-card empty"><p>${esc(TT(lang, 'empty'))}</p></div>`;
   return `<div class="nm-card g-${t.g}"><div class="nm-cg">${esc(f.group)}</div>
     <div class="nm-ch"><span class="nm-badge g-${t.g}${t.implied ? ' imp' : ''} notr">${esc(t.implied ? '–' : t.text)}</span><b>${esc(f.title)}</b></div>
     <p>${esc(f.desc)}</p>${t.opt ? `<p class="nm-opt">${esc(TT(lang, 'optD'))}</p>` : ''}
-    ${showSrc ? `<a class="nm-src" href="https://www.andestech.com" target="_blank" rel="noopener">${esc(TT(lang, 'src'))} <span class="notr">· andestech.com</span></a>` : ''}</div>`;
+    ${showSrc ? sourceHTML(lang) : ''}</div>`;
+}
+function featureListHTML(parsed, dictionary, lang, showSource){
+  const features = parsed.toks.filter(token => token.g === 'feature');
+  const rows = features.map(token => {
+    const detail = info(token, dictionary, lang);
+    return `<li class="nm-feature-row"><div class="nm-ch">
+      <span class="nm-badge g-feature notr">${esc(token.text)}</span><b>${esc(detail.title)}</b></div>
+      <p>${esc(detail.desc)}</p>${token.opt ? `<p class="nm-opt">${esc(TT(lang, 'optD'))}</p>` : ''}</li>`;
+  });
+  const heading = lang === 'ko' ? '기능 접미어' : 'Feature suffixes';
+  const empty = !parsed.name ? TT(lang, 'empty') : parsed.ok
+    ? (lang === 'ko' ? '기능 접미어가 없습니다.' : 'This model has no feature suffix.')
+    : (lang === 'ko' ? '인식된 기능 접미어가 없습니다.' : 'No recognised feature suffix.');
+  return `<div class="nm-card nm-feature-card"><div class="nm-cg">${esc(heading)}</div>
+    ${rows.length ? `<ul class="nm-feature-rows" tabindex="0" aria-label="${esc(heading)}">${rows.join('')}</ul>` : `<p>${esc(empty)}</p>`}
+    ${showSource ? sourceHTML(lang) : ''}</div>`;
 }
 const tagsHTML = (p, nm) => `<div class="nm-tags notr">${tags(p, nm).map(t => `<span>${esc(t)}</span>`).join('')}</div>`;
 const clampSel = (p, sel) => p.toks.length ? Math.max(0, Math.min(p.toks.length - 1, sel | 0)) : 0;
@@ -2920,19 +2949,21 @@ function inner(ctx, s){
     return top + `<div class="nm-ref" style="--cols:${ref.length > 9 ? 4 : 3}">${ref.map(t => `<div class="nm-rc g-${t.g}"><span class="nm-badge g-${t.g} notr">${esc(t.k)}</span><div><div class="nm-cg">${esc(TT(lang, t.g))}</div><b>${esc(tx(t.t, lang))}</b><p>${esc(tx(t.d, lang))}</p></div></div>`).join('')}</div>
       ${ser ? `<div class="nm-refnote"><span class="nm-badge g-series notr">45</span><span><b>${esc(TT(lang, 'series'))}</b> · ${esc(String(tx(ser.d, lang)))}</span></div>` : ''}`;
   }
-  const p = parse(st.model, nm), sel = clampSel(p, st.tok);
+  const p = parse(st.model, nm), sel = d.featureList ? -1 : clampSel(p, st.tok);
   const steps = (d.steps || []).map((x, i) => `<div class="nm-step"><span class="nm-sn notr">${String(i + 1).padStart(2, '0')}</span>${RR.E2(ctx, d, `steps.${i}.t`, 'nm-st', 'Step')}</div>`).join('');
   return top + `<div class="nm-grid">
     <div class="nm-left"><div class="nm-lhd"><div class="nm-k"><span class="notr">01</span> / ${esc(TT(lang, 'bd'))}</div>${RR.E2(ctx, d, 'inputLabel', 'nm-il', 'Input label')}</div>
       <input class="nm-in notr" type="text" value="${esc(st.model)}" spellcheck="false" autocomplete="off" aria-label="${esc(tx(d.inputLabel, lang) || 'Model')}" placeholder="AX45MPV"${act ? '' : ' tabindex="-1" readonly'}>
       ${matrixHTML(nm, st.model, lang)}</div>
-    <div class="nm-mid"><div class="nm-brand notr">AndesCore™</div><div class="nm-name notr">${esc(p.name || '—')}${APP.naming.isUpcoming(nm, p.name) ? `<span class="nm-uptag">${esc(TT(lang, 'up'))}</span>` : ''}</div>${p.toks.length ? tilesHTML(p, sel, lang, tileW.slide) : `<div class="nm-none">${esc(TT(lang, 'empty'))}</div>`}
+    <div class="nm-mid"><div class="nm-brand notr">AndesCore™</div><div class="nm-name notr">${esc(p.name || '—')}${APP.naming.isUpcoming(nm, p.name) ? `<span class="nm-uptag">${esc(TT(lang, 'up'))}</span>` : ''}</div>${p.toks.length ? tilesHTML(p, sel, lang, tileW.slide, !d.featureList) : `<div class="nm-none">${esc(TT(lang, 'empty'))}</div>`}
       ${tagsHTML(p, nm)}<div class="nm-sum">${esc(summary(p, nm, lang))}</div></div>
-    <div class="nm-right">${detailHTML(p, sel, nm, lang, d.showSource !== false)}<div class="nm-pick">${esc(TT(lang, 'pick'))}</div></div>
+    <div class="nm-right">${d.featureList
+      ? featureListHTML(p, nm, lang, d.showSource !== false)
+      : detailHTML(p, sel, nm, lang, d.showSource !== false) + `<div class="nm-pick">${esc(TT(lang, 'pick'))}</div>`}</div>
   </div><div class="nm-steps">${steps}</div>`;
 }
 APP.LAYOUTS.naming = { name:'Naming guide', desc:'How to read an AndesCore™ name: live name breakdown and token reference',
-  render(ctx, s){ return RR.stdFrame(ctx, s, `<div class="nmx" data-nm="${esc(s.id)}">${inner(ctx, s)}</div>`); },
+  render(ctx, s){ return RR.stdFrame(ctx, s, `<div class="nmx${s.data.featureList ? ' nm-feature-list' : ''}" data-nm="${esc(s.id)}">${inner(ctx, s)}</div>`); },
   make(){ return { title:b('How to read an AndesCore™ name', 'AndesCore™ 제품명 읽는 법'), lead:b('Prefixes set the role. Suffixes flag features.', '접두어는 역할을, 접미어는 기능을 나타냅니다.'),
     inputLabel:b('Enter or select a model', '모델명을 입력하거나 선택하십시오'),
     steps:[ { t:b('Identify the N / A / D role', 'N / A / D 역할 확인') }, { t:b('Read X for 32 / 64-bit', 'X로 32 / 64비트 확인') }, { t:b('Check series &amp; configuration', '시리즈 및 구성 확인') } ],
