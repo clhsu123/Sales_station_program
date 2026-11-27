@@ -2227,6 +2227,10 @@ APP.imgSrc = function(ref){
   return ref;
 };
 const imgSrc = APP.imgSrc;
+APP.brandImage = function(id, cls, alt){
+  const src = imgSrc('a:' + id);
+  return src ? `<img class="${cls}" src="${esc(src)}" alt="${esc(alt)}">` : '';
+};
 // Walk actual values, including table cells, logos and originalImage; do not parse JSON with an ID regex.
 APP.imageReferences = function(obj){
   const refs = [], seen = new WeakSet();
@@ -2435,14 +2439,14 @@ function footer(ctx, slide, dark){
   const st = ctx.settings || {};
   const conf = st.confidential !== false && slide.confidential;
   dark = dark || tone(ctx, 'footer') === 'dark';
-  return `<div class="ft"><img class="alogo" src="${ASSETS[dark ? 'andes-logo-rev' : 'andes-logo']}" alt="Andes">${conf ? `<span class="conf">${sl(ctx, 'conf')}</span>` : ''}
+  return `<div class="ft">${APP.brandImage(dark ? 'andes-logo-rev' : 'andes-logo', 'alogo', 'Andes')}${conf ? `<span class="conf">${sl(ctx, 'conf')}</span>` : ''}
     <span class="tag">${esc(st.tagline == null ? 'Taking RISC-V® Mainstream' : tx(st.tagline, ctx.lang))}</span>
-    <img class="rv" src="${ASSETS[dark ? 'riscv-logo-rev' : 'riscv-logo']}" alt="RISC-V">${st.pageNumbers === false ? '' : `<span class="pg">${ctx.page || ''}</span>`}</div>`;
+    ${APP.brandImage(dark ? 'riscv-logo-rev' : 'riscv-logo', 'rv', 'RISC-V')}${st.pageNumbers === false ? '' : `<span class="pg">${ctx.page || ''}</span>`}</div>`;
 }
 function stdFrame(ctx, slide, inner, extraCls=''){
   const d = slide.data;
   return `<div class="slide L-${slide.layout} ${extraCls} ${ctx.edit ? 'editing' : ''}" ${LA(ctx)} style="--ts:${d.scale || 1}" data-sid="${slide.id}">
-    ${WAVES}<div class="chipimg" style="background-image:url('${ASSETS['corner-chip']}')"></div>
+    ${WAVES}<div class="chipimg" style="background-image:url('${imgSrc('a:corner-chip')}')"></div>
     ${E2(ctx, d, 'title', 'stitle', 'Slide title')}
     <div class="content">${inner}</div>${footer(ctx, slide)}</div>`;
 }
@@ -2462,10 +2466,10 @@ L.cover = { name:'Cover', desc:'Title slide with date and customer name',
   render(ctx, s){ const d = s.data;
     return `<div class="slide L-cover ${ctx.edit ? 'editing' : ''}" ${LA(ctx, 'cover')} style="--ts:${d.scale||1}" data-sid="${s.id}">
       <div class="cbg ${ctx.edit ? '' : ''}" style="background-image:url('${imgSrc(d.bg)}')" ${ctx.edit ? `data-img="bg" title="${APP.t ? APP.t('Click to change background') : 'Click to change background'}"` : ''}></div><div class="cshade"></div>
-      <img class="clogo" src="${ASSETS[tone(ctx, 'cover') === 'dark' ? 'andes-logo-rev' : 'andes-logo']}" alt="Andes">
+      ${APP.brandImage(tone(ctx, 'cover') === 'dark' ? 'andes-logo-rev' : 'andes-logo', 'clogo', 'Andes')}
       <div class="cbox">${E(ctx, d, 'date', 'cdate', 'Date')}${E2(ctx, d, 'title', 'ctitle', 'Presentation title')}<div class="cbar"></div>
         ${E(ctx, d, 'subtitle', 'csub', 'Prepared for … (use {{company}})')}${E(ctx, d, 'note', 'cnote', 'Optional note / presenter')}</div>
-      <img class="crv" src="${ASSETS[tone(ctx, 'cover') === 'dark' ? 'riscv-logo-rev' : 'riscv-logo']}" alt="RISC-V">
+      ${APP.brandImage(tone(ctx, 'cover') === 'dark' ? 'riscv-logo-rev' : 'riscv-logo', 'crv', 'RISC-V')}
       ${d.showQr && d.qr ? IMG(ctx, d, 'qr', 'cqr') : ''}</div>`; },
   fields:[ {type:'image', path:'bg', label:'Background image'}, {type:'toggle', path:'showQr', label:'Show QR code'}, {type:'image', path:'qr', label:'QR code image'} ],
   make(){ return { title:'Presentation title', date:'{{meeting_date}}', subtitle:'{{company}}', note:'', bg:'a:bg-cover', qr:'', showQr:false }; } };
@@ -2632,7 +2636,7 @@ L.closing = { name:'Closing / contact', desc:'Thank-you slide with contact card'
       ${E2(ctx, d, 'title', 'ty', 'Thank you')}${E(ctx, d, 'subtitle', 'tysub', 'Optional message, e.g. 감사합니다')}
       <div class="ccard2">${E2(ctx, d, 'name', 'nm', 'Your name')}${E(ctx, d, 'role', 'rl', '[Your title]')}${E(ctx, d, 'company', 'rl', 'Company')}
         ${line(sl(ctx,'email'), 'email', '[your email]')}${line(sl(ctx,'phone'), 'phone', '[your phone]')}${line(sl(ctx,'web'), 'web', '[website]')}</div>
-      <img class="clogo2" src="${ASSETS['andes-logo-rev']}" alt="Andes"></div>`; },
+      ${APP.brandImage('andes-logo-rev', 'clogo2', 'Andes')}</div>`; },
   fields:[ {type:'image', path:'bg', label:'Background image'} ],
   make(){ return clone(window.buildMasterSlides().slice(-1)[0].data); } };
 
@@ -3678,7 +3682,7 @@ function renderLibrary(){
   const mFirst = m.deck.slides.find(s => !s.hidden) || m.deck.slides[0];
   const knowledge = libState.view === 'fae' || libState.view === 'stories';
   const brand = libState.view === 'stories' ? ['Knowledge · Success stories', 'Reusable customer success stories'] : libState.view === 'fae' ? ['Knowledge · FAE library', 'Cores, software and solutions for FAEs'] : ['Decks', 'Customer decks and the master sales deck'];
-  root.innerHTML = `<div class="topbar">${topWave()}<div class="brand"><img src="${ASSETS['andes-logo']}" alt="Andes"><div>${brand[0]}<small>${brand[1]}</small></div></div><div class="grow"></div>
+  root.innerHTML = `<div class="topbar">${topWave()}<div class="brand">${APP.brandImage('andes-logo', 'brand-logo', 'Andes')}<div>${brand[0]}<small>${brand[1]}</small></div></div><div class="grow"></div>
     <span class="savestate"></span>${warn}
  ${APP.uiSeg()}
     <button class="btn" id="lb-import" title="Import a single case (.andescase.json) or a backup">${icon('up')} Import</button>
@@ -7398,7 +7402,7 @@ function langButtons(){
   return langs.map(([id, lab]) => `<button type="button" data-l="${id}" class="${cur === id ? 'on' : ''}">${esc(lab)}</button>`).join('');
 }
 function navHTML(active){
-  return `<div class="nav-brand"><img src="${(window.ANDES_ASSETS || {})['andes-logo'] || ''}" alt="" class="nav-logo"><span>${T2('Andes Sales Studio', 'Andes 세일즈 스튜디오', 'Andes 業務工作室')}</span></div>
+  return `<div class="nav-brand">${APP.brandImage('andes-logo', 'nav-logo', '')}<span>${T2('Andes Sales Studio', 'Andes 세일즈 스튜디오', 'Andes 業務工作室')}</span></div>
     ${APP.regionSwitchHTML ? APP.regionSwitchHTML() : ''}
     <nav class="nav-tabs" aria-label="${T2('Main', '주 메뉴', '主選單')}">${NAV().map(([v, l]) => `<a href="#${v}" data-nav="${v}" class="${v === active ? 'on' : ''}" ${v === active ? 'aria-current="page"' : ''}>${esc(l)}</a>`).join('')}</nav>
     <div class="grow"></div>${FS.pillHTML()}
