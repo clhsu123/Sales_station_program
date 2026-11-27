@@ -856,6 +856,50 @@ html[lang=ko] body{word-break:keep-all}
 .eco-hint{position:absolute;left:0;right:0;bottom:-2px;text-align:center;font-size:14px;color:var(--eco-mut)}
 .slide:not([data-theme]) .eco-card{box-shadow:0 6px 18px rgba(14,27,68,.10)}
 
+.ecx.eco-teaching.has-sel{display:grid;grid-template-columns:1fr 1.04fr;gap:22px;align-items:stretch;padding:19px 5px 22px}
+.eco-teaching-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:1fr;gap:12px}
+.eco-teaching-cards .eco-card{position:relative;left:auto!important;top:auto!important;width:auto;height:auto;min-width:0;padding:12px;gap:9px}
+.eco-teaching-cards .eco-icw{width:38px;height:38px;border-radius:10px}
+.eco-teaching-cards .eco-ic{width:24px;height:24px}
+.eco-teaching-cards .eco-nm{display:grid;white-space:normal}
+.eco-teaching-cards .eco-b{font-size:18px}
+.eco-teaching-cards .eco-c,.eco-teaching-cards .eco-t{font-size:13px}
+.eco-teaching .eco-panel-expanded{position:relative;top:auto!important;left:auto!important;transform:none;width:auto;max-height:none;min-height:0;box-shadow:0 0 0 2px #f6c764;gap:14px;padding:22px 26px;overflow:auto}
+.eco-detail-rows{margin:0;display:grid;gap:0}
+.eco-detail-row{padding:12px 0;display:grid;grid-template-columns:142px 1fr;gap:14px;border-bottom:1px solid #ffffff36}
+.eco-detail-row dt{color:#f6c764;font-size:16px;font-weight:750}
+.eco-detail-row dd{font-size:17px;line-height:1.35;margin:0;white-space:pre-line;overflow-wrap:anywhere}
+.eco-teaching .eco-fae-link.fae-pin{position:static;align-self:flex-start;margin-top:3px;transform:none}
+.slide.L-namingLesson{background:#fbfbf8;color:#14224a}
+.L-namingLesson>.bgdeco,.L-namingLesson>.chipimg{display:none}
+.slide.L-namingLesson>.stitle{color:#14224a;right:56px}
+.L-ecohub:has(.eco-teaching)>.stitle{right:56px}
+.eco-teaching .eco-x{border:0}
+.L-namingLesson.teach-name-hide-title>.stitle{display:none}
+.teach-name{position:absolute;inset:14px 0 10px;display:flex;flex-direction:column;align-items:stretch;gap:18px;color:#14224a}
+.teach-name-model{margin:0;text-align:center;font-size:33px;font-weight:800;overflow-wrap:anywhere}
+.teach-name-grid{display:grid;grid-template-columns:repeat(var(--columns),minmax(0,1fr));overflow:auto;gap:16px;align-items:stretch}
+.teach-name-part{min-width:0;display:flex;flex-direction:column;align-items:center}
+.teach-name-token{max-width:100%;padding:2px 12px;text-align:center;font-size:var(--token-size);font-weight:850;line-height:1.05;border-bottom:5px solid var(--part-color);overflow-wrap:anywhere}
+.teach-name-token.implied{border:2px dashed #456681;background:var(--part-color);border-radius:10px;padding-inline:20px}
+.teach-name-arrow{height:58px;border-left:2px solid #14224a;position:relative;margin-bottom:6px}
+.teach-name-arrow::after{content:"";position:absolute;left:-6px;bottom:0;width:8px;height:8px;border:solid #14224a;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.teach-name-card{width:100%;flex:1;border:1px solid #bfc8d6;border-radius:14px;overflow:hidden;background:#fffdf6;text-align:center}
+.teach-name-label{background:var(--part-color);font-size:16px;font-weight:800;padding:10px;overflow-wrap:anywhere}
+.teach-name-card strong{display:block;font-size:23px;padding:14px 12px 0;overflow-wrap:anywhere}
+.teach-name-card p{font-size:17px;line-height:1.35;padding:0 12px 12px;margin:8px 0 0;overflow-wrap:anywhere;white-space:pre-line}
+.teach-name-grid.compact .teach-name-token{font-size:min(38px,var(--token-size));border-bottom-width:3px}
+.teach-name-grid.compact .teach-name-arrow{height:24px}
+.teach-name-grid.compact .teach-name-card strong{font-size:17px;padding-top:8px}
+.teach-name-grid.compact .teach-name-card p{font-size:14px;padding-bottom:8px}
+.teach-name-ref{background:#faf0d7;border-radius:12px;text-align:center;padding:10px;font-size:19px;font-weight:700;overflow-wrap:anywhere}
+.teaching-field{display:grid;gap:5px;margin:7px 0}
+.teaching-field.toggle{display:flex;align-items:center;gap:8px}
+.teaching-field>span{font-weight:600}
+.teaching-field textarea{min-height:60px;width:100%;resize:vertical}
+.teaching-module{margin:7px 0;padding:8px 10px;border:1px solid var(--line,#c8d5e4);border-radius:8px}
+.teaching-module summary{font-weight:700;cursor:pointer}
+
 /* ---- naming guide: lineup matrix picker ---- */
 .slide{--mx-hl:rgba(246,199,100,.16);--mx-band:rgba(22,46,122,.05);--mx-hd:#55637D}
 .slide[data-tone=dark]{--mx-hl:rgba(246,199,100,.16);--mx-band:rgba(255,255,255,.05);--mx-hd:#C3CDE0}
@@ -3094,8 +3138,9 @@ const POS = { top:[584, 60], ul:[190, 208], ur:[978, 208], lr:[970, 452], ll:[19
 APP.ECO_POS = POS;
 
 APP.eco = { live:{} };
+const teachingSelection = new WeakMap();
 const stateOf = (ctx, s) => { const lv = ctx.live && APP.eco.live[s.id]; const d = s.data || {}; const n = (d.spokes || []).length;
-  const v = lv ? lv.sel : (d.sel == null ? -1 : +d.sel); return { sel: v >= 0 && v < n ? v : -1 }; };
+  const v = ctx.edit && d.teachingDetails ? (teachingSelection.get(s) ?? -1) : lv ? lv.sel : (d.sel == null ? -1 : +d.sel); return { sel: v >= 0 && v < n ? v : -1 }; };
 
 function inner(ctx, s){
   const d = s.data, lang = ctx.lang, st = stateOf(ctx, s), sp = d.spokes || [], act = ctx.live || ctx.edit;
@@ -3118,6 +3163,21 @@ function inner(ctx, s){
     if((x.jump || x.jumpRole) && act){ const c = ctx.case; const all = (c && c.deck && c.deck.slides) || [];
       const tg = x.jumpRole ? all.filter(z => z.data && z.data.role === x.jumpRole) : all.filter(z => (z.layout === 'naming' || z.layout === 'roadmap') && !z.hidden);
       if(tg.length) jump = `<div class="eco-jumps">${tg.map(z => `<span class="eco-jump" role="button" tabindex="0" data-eco-jump="${esc(z.id)}">${RR.resolve ? RR.resolve(tx(z.data.title, lang), ctx) : esc(tx(z.data.title, lang))} →</span>`).join('')}</div>`; }
+    const detail = d.teachingDetails && x.detail;
+    if(detail){
+      const rows = Object.entries(APP.eco.detailLabels).map(([key,label]) => {
+        const value = tx(detail[key], lang);
+        return value ? `<div class="eco-detail-row"><dt>${esc(tx(label, lang))}</dt><dd>${esc(APP.plainText(value))}</dd></div>` : '';
+      }).join('');
+      jump = ctx.live && detail.fae && APP.fae?.ready(detail.fae)
+        ? `<button type="button" class="fae-pin eco-fae-link" data-fae="${esc(detail.fae)}">${lang === 'ko' ? '관련 FAE 자료' : 'Related FAE notes'} ›</button>` : '';
+      centre = `<div class="eco-panel eco-panel-expanded" role="region" aria-label="${esc(tx(x.name, lang))}">
+        <button class="eco-x" type="button" data-eco-close aria-label="${esc(TT(lang, 'close'))}">✕</button>
+        <div class="eco-ph">${icon(x.icon, 'eco-ic big')}<div><div class="eco-pn">${esc(tx(x.name, lang))}</div>
+        <div class="eco-pc">${esc(APP.plainText(tx(x.cat, lang)))}</div></div></div>
+        <dl class="eco-detail-rows">${rows}</dl>${jump}</div>`;
+      return '<div class="eco-teaching-cards">' + cards + '</div>' + centre;
+    }
     centre = `<div class="eco-panel" style="left:${HC[0] - 220}px;top:${HC[1]}px" role="region" aria-label="${esc(tx(x.name, lang))}">
       ${act ? `<span class="eco-x" data-eco-close role="button" tabindex="0" aria-label="${esc(TT(lang, 'close'))}" title="${esc(TT(lang, 'close'))} (Esc)">✕</span>` : ''}
       <div class="eco-kick notr">${String(tx(d.hub, lang)).replace(/<br\s*\/?>/gi, ' ')}</div>
@@ -3128,25 +3188,26 @@ function inner(ctx, s){
   return svg + centre + cards + hint;
 }
 APP.LAYOUTS.ecohub = { name:'Ecosystem hub', desc:'Hub-and-spoke overview of the Andes Embedded™ solutions; click a spoke to expand it',
-  render(ctx, s){ return RR.stdFrame(ctx, s, `<div class="ecx${stateOf(ctx, s).sel >= 0 ? ' has-sel' : ''}${(s.data.spokes || []).length >= 6 ? ' ecx6' : ''}" data-eco="${esc(s.id)}">${inner(ctx, s)}</div>`); },
+  render(ctx, s){ return RR.stdFrame(ctx, s, `<div class="ecx${s.data.teachingDetails ? ' eco-teaching' : ''}${stateOf(ctx, s).sel >= 0 ? ' has-sel' : ''}${(s.data.spokes || []).length >= 6 ? ' ecx6' : ''}" data-eco="${esc(s.id)}">${inner(ctx, s)}</div>`); },
   make(){ return {title:b('Demo ecosystem'),hub:b('Demo'),sel:-1,spokes:[
     {pos:'top',icon:'isa',name:b('Example core'),cat:b('Architecture'),text:b('Fictional training material')}
   ]}; } };
 APP.ECO_NOTES = '';
 
 APP.makeEcoSlide = id => ({ id: id || APP.util.uid(), layout:'ecohub', notes:{ en: APP.ECO_NOTES, ko:'' }, data: APP.LAYOUTS.ecohub.make() });
-APP.TEXT_FIELDS.ecohub = ['title', 'hub', 'spokes.*.name', 'spokes.*.cat', 'spokes.*.text'];
+APP.TEXT_FIELDS.ecohub = ['title', 'hub', 'spokes.*.name', 'spokes.*.cat', 'spokes.*.text', 'spokes.*.detail.purpose', 'spokes.*.detail.use', 'spokes.*.detail.example'];
 if(!APP.GALLERY_ORDER.includes('ecohub')){ const i = APP.GALLERY_ORDER.indexOf('naming'); APP.GALLERY_ORDER.splice(i < 0 ? APP.GALLERY_ORDER.length : i, 0, 'ecohub'); }
 
 /* ---- interaction (called from APP.naming.click / key, which every mode already routes through) ---- */
 function setSel(mode, sid, sel){
-  if(mode === 'editor'){ const c = APP.S.current; const s = c && c.deck.slides.find(x => x.id === sid); if(!s) return; s.data.sel = sel; APP.touch(); }
+  if(mode === 'editor'){ const c = APP.S.current; const s = c && c.deck.slides.find(x => x.id === sid); if(!s) return; if(s.data.teachingDetails) teachingSelection.set(s, sel); else { s.data.sel = sel; APP.touch(); } }
   else APP.eco.live[sid] = { sel };
   APP.naming._redraw(mode);
 }
 function curSel(mode, sid){
   if(mode !== 'editor' && APP.eco.live[sid]) return APP.eco.live[sid].sel;
   const list = mode === 'editor' ? ((APP.S.current || {}).deck || {}).slides : APP.P.list; const s = (list || []).find(x => x.id === sid);
+  if(mode === 'editor' && s?.data.teachingDetails) return teachingSelection.get(s) ?? -1;
   return s && s.data.sel != null ? +s.data.sel : -1;
 }
 APP.eco.click = function(e, mode){
@@ -4498,7 +4559,19 @@ async function loadPublishedLibrary(){
     // Preserve browser edits against the Git version on which they began.
     if(current && ((baseline && (current.updated || 0) !== baseline.updated) ||
         (!baseline && !current.bootstrapMaster && (current.updated || 0) > (published.updated || 0)))){
-      versions[published.id] = baseline || { revision:published.publishedRevision, updated:published.updated || 0 };
+      const retained = baseline || { revision:published.publishedRevision, updated:published.updated || 0 };
+      const applied = new Set(retained.appliedAdditions || []);
+      let added = false;
+      for(const slide of published.deck.slides.filter(item => item.addToExistingDraftAfter)){
+        if(!applied.has(slide.id) && !current.deck.slides.some(item => item.id === slide.id)){
+          const anchor = current.deck.slides.findIndex(item => item.id === slide.addToExistingDraftAfter);
+          current.deck.slides.splice(anchor < 0 ? current.deck.slides.length : anchor + 1, 0, slide);
+          added = true;
+        }
+        applied.add(slide.id);
+      }
+      if(added) await APP.DB.put('cases', current);
+      versions[published.id] = { ...retained, appliedAdditions:[...applied] };
       continue;
     }
     if(!current || baseline?.revision !== published.publishedRevision){
@@ -4506,7 +4579,8 @@ async function loadPublishedLibrary(){
       S.cases.push(published);
       await APP.DB.put('cases', published);
     }
-    versions[published.id] = { revision:published.publishedRevision, updated:published.updated || 0 };
+    versions[published.id] = { revision:published.publishedRevision, updated:published.updated || 0,
+      appliedAdditions:published.deck.slides.filter(slide => slide.addToExistingDraftAfter).map(slide => slide.id) };
   }
   await APP.setMeta('publishedCaseVersions', versions);
   if(data.labels && !S.meta.storyLabels) S.meta.storyLabels = data.labels;
@@ -12382,6 +12456,256 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   }
 })();
 
+(function(){
+'use strict';
+const APP = window.APP;
+const { esc } = APP.util;
+const { tx, rawLang, setBi } = APP.i18n;
+const { E2, stdFrame } = APP._R;
+const groups = {role:'Role', width:'Width', series:'Series', feature:'Feature', unk:'Unrecognised', custom:'Custom'};
+const colors = {role:'#f7d581', width:'#a9d8fb', series:'#d9c7f4', feature:'#a7e3d0', unk:'#e6eaf0', custom:'#e6eaf0'};
+const ecoFields = [['purpose','What it does'], ['use','When to use it'], ['example','Example']];
+const ecoLabels = {
+  purpose:{en:'What it does',ko:'주요 기능'},
+  use:{en:'When to use it',ko:'사용 시점'},
+  example:{en:'Example',ko:'예시'}
+};
+const langOf = () => APP.slideLang();
+const openPanels = new WeakMap();
+function rememberedPanel(slide, key, open){
+  const panels = openPanels.get(slide) || new Map();
+  openPanels.set(slide, panels);
+  const panel = document.createElement('details');
+  panel.className = 'teaching-module';
+  panel.open = open ?? (panels.get(key) || false);
+  panel.addEventListener('toggle', () => panels.set(key, panel.open));
+  return panel;
+}
+const plain = value => APP.plainText(String(value || ''));
+function addControl(root, label, tag, value, update, type){
+  const field = document.createElement('label');
+  field.className = 'teaching-field';
+  const caption = document.createElement('span');
+  caption.textContent = label;
+  const input = document.createElement(tag);
+  if(type) input.type = type;
+  if(type === 'checkbox'){
+    field.classList.add('toggle');
+    input.checked = !!value;
+    field.append(input, caption);
+  } else {
+    input.value = value ?? '';
+    field.append(caption, input);
+  }
+  input.addEventListener(type === 'checkbox' ? 'change' : 'input', () => {
+    update(type === 'checkbox' ? input.checked : input.value);
+  });
+  root.append(field);
+  return input;
+}
+function updateStage(){
+  APP.touch();
+  APP.renderStage();
+  APP._a3.refreshThumb(APP.S.sel);
+}
+function textField(root, label, record, key, multiline = false){
+  const lang = langOf();
+  return addControl(root, label, multiline ? 'textarea' : 'input',
+    plain(rawLang(record[key], lang) || tx(record[key], lang)), value => {
+      record[key] = setBi(record[key], lang, esc(value));
+      updateStage();
+    });
+}
+function visibility(root, label, record, key){
+  addControl(root, label, 'input', record[key] !== false, value => {
+    record[key] = value;
+    updateStage();
+  }, 'checkbox');
+}
+APP.eco.detailLabels = ecoLabels;
+APP.FIELD.teachingEco = function(root, slide){
+  if(!slide.data.teachingDetails) return;
+  const heading = document.createElement('h4');
+  heading.textContent = 'Component details';
+  root.append(heading);
+  for(const spoke of slide.data.spokes){
+    const box = rememberedPanel(slide, spoke.icon);
+    const summary = document.createElement('summary');
+    summary.textContent = plain(tx(spoke.name, langOf()));
+    box.append(summary);
+    for(const [key, label] of ecoFields) textField(box, label, spoke.detail, key, true);
+    const picker = document.createElement('label');
+    picker.className = 'teaching-field';
+    picker.textContent = 'Related FAE section';
+    const select = document.createElement('select');
+    select.add(new Option('None', ''));
+    for(const section of APP.S.cases.filter(item => item.kind === 'fae' && item.section && APP.fae?.ready(item.section))){
+      select.add(new Option(APP.caseTitle(section), section.section));
+    }
+    select.value = spoke.detail.fae || '';
+    select.addEventListener('change', () => {
+      spoke.detail.fae = select.value;
+      updateStage();
+    });
+    picker.append(select);
+    box.append(picker);
+    root.append(box);
+  }
+};
+APP.LAYOUTS.ecohub.fields = [...(APP.LAYOUTS.ecohub.fields || []), {type:'teachingEco'}];
+
+function defaults(model, current){
+  const dictionary = APP.namingOf(current?.naming ? current : APP.master());
+  return APP.naming.parse(model, dictionary).toks.map(token => {
+    const en = APP.naming.info(token, dictionary, 'en');
+    const ko = APP.naming.info(token, dictionary, 'ko');
+    return {
+      group:token.g,
+      token:token.implied ? '—' : token.opt ? '(' + token.text + ')' : token.text,
+      implied:!!token.implied,
+      title:{en:en.title,ko:ko.title},
+      description:{en:en.desc,ko:ko.desc},
+      color:colors[token.g]
+    };
+  });
+}
+function modules(data, current, create = false){
+  const model = APP.naming.norm(data.model);
+  const key = 'model:' + model;
+  const stored = data.examples?.[key];
+  if(stored) return stored;
+  const result = defaults(data.model, current);
+  if(create) (data.examples ||= {})[key] = result;
+  return result;
+}
+function renderName(ctx, slide){
+  const d = slide.data;
+  const active = modules(d, ctx.case).filter(item => item.visible !== false);
+  const columns = Math.min(4, Math.max(1, active.length > 4 ? Math.ceil(active.length / Math.ceil(active.length / 4)) : active.length));
+  const safeColor = color => /^#[\da-f]{6}$/i.test(color) ? color : colors.custom;
+  const parts = active.map(item => {
+    const size = Math.min(70, Math.floor((1100 / columns - 24) / Math.max(2, Array.from(item.token || '').length) / .75));
+    return `<section class="teach-name-part" style="--part-color:${safeColor(item.color)};--token-size:${size}px">
+    ${item.showToken !== false ? `<div class="teach-name-token${item.implied ? ' implied' : ''}">${esc(item.token)}</div>` : ''}
+    ${d.showArrows !== false && item.showToken !== false && item.showCard !== false ? '<div class="teach-name-arrow" aria-hidden="true"></div>' : ''}
+    ${item.showCard !== false ? `<div class="teach-name-card">
+      ${item.showLabel !== false ? `<div class="teach-name-label">${esc(item.label ?? (APP.NAMING_TXT[ctx.lang]?.[item.group] || groups[item.group]))}</div>` : ''}
+      ${item.showTitle !== false ? `<strong>${esc(plain(tx(item.title, ctx.lang)))}</strong>` : ''}
+      ${item.showDescription !== false ? `<p>${esc(plain(tx(item.description, ctx.lang)))}</p>` : ''}
+    </div>` : ''}
+  </section>`;
+  }).join('');
+  return stdFrame(ctx, slide, `<div class="teach-name">
+    ${d.showModel !== false ? `<div class="teach-name-model">${esc(d.model)}</div>` : ''}
+    <div class="teach-name-grid${active.length > 4 ? ' compact' : ''}" style="--columns:${columns}">${parts}</div>
+    ${d.showReference !== false ? `<div class="teach-name-ref">${E2(ctx, d, 'reference', '', 'Token reference', 'div')}</div>` : ''}
+  </div>`, d.showTitle === false ? 'teach-name-hide-title' : '');
+}
+APP.LAYOUTS.namingLesson = {
+  name:'Model name diagram',
+  desc:'Enter a model in the sidebar to teach the role, width, series and suffixes.',
+  render:renderName,
+  fields:[{type:'teachingNaming'}],
+  make(){ return {title:{en:'How to read an AndesCore™ name',ko:'AndesCore™ 제품명 읽는 법'}, model:'D45-SE', reference:'N · A · D     |     X     |     F · V · MP · L2 · -SE', examples:{}}; }
+};
+APP.TEXT_FIELDS.namingLesson = ['title','reference','examples.*.*.title','examples.*.*.description'];
+APP.GALLERY_ORDER.push('namingLesson');
+
+APP.FIELD.teachingNaming = function(root, slide){
+  const d = slide.data;
+  const body = document.createElement('div');
+  const model = addControl(root, 'Product model', 'input', d.model, value => {
+    d.model = value;
+    updateStage();
+    renderModules();
+  });
+  model.placeholder = 'D45-SE';
+  model.maxLength = 48;
+  textField(root, 'Slide title', d, 'title');
+  visibility(root, 'Show slide title', d, 'showTitle');
+  visibility(root, 'Show full model', d, 'showModel');
+  visibility(root, 'Show arrows', d, 'showArrows');
+  visibility(root, 'Show token reference', d, 'showReference');
+  textField(root, 'Token reference', d, 'reference');
+  root.append(body);
+
+  function renderModules(openIndex = -1){
+    body.replaceChildren();
+    const arr = modules(d, APP.S.current);
+    const heading = document.createElement('h4');
+    heading.textContent = 'Modules';
+    body.append(heading);
+    const changeOrder = (from, to) => {
+      if(from === to || from < 0 || to < 0 || to >= arr.length) return;
+      const saved = modules(d, APP.S.current, true);
+      saved.splice(to, 0, saved.splice(from, 1)[0]);
+      updateStage();
+      renderModules(to);
+    };
+    const action = (parent, label, fn) => {
+      const button = document.createElement('button');
+      button.type = 'button'; button.className = 'btn sm'; button.textContent = label;
+      button.addEventListener('click', fn);
+      parent.append(button);
+      return button;
+    };
+    let dragged = -1;
+    arr.forEach((item, index) => {
+      const box = rememberedPanel(slide, APP.naming.norm(d.model) + ':' + index, openIndex === -1 ? undefined : index === openIndex);
+      const summary = document.createElement('summary');
+      summary.textContent = (item.token || '•') + ' · ' + (item.label ?? groups[item.group]);
+      summary.draggable = true;
+      summary.addEventListener('dragstart', event => {
+        dragged = index;
+        event.dataTransfer.setData('text/plain', String(index));
+      });
+      summary.addEventListener('dragend', () => { dragged = -1; });
+      summary.addEventListener('dragover', event => { if(dragged >= 0) event.preventDefault(); });
+      summary.addEventListener('drop', event => {
+        if(dragged < 0) return;
+        event.preventDefault();
+        changeOrder(dragged, index);
+      });
+      box.append(summary);
+      const store = (key, value) => {
+        modules(d, APP.S.current, true)[index][key] = value;
+        updateStage();
+      };
+      addControl(box, 'Visible', 'input', item.visible !== false, value => store('visible', value), 'checkbox');
+      for(const [key, label] of [['token','Token'], ['label','Label'], ['title','Title'], ['description','Explanation']]){
+        const bi = key === 'title' || key === 'description';
+        addControl(box, label, key === 'description' ? 'textarea' : 'input',
+          bi ? plain(tx(item[key], langOf())) : item[key] ?? groups[item.group], value => {
+            const current = modules(d, APP.S.current, true)[index][key];
+            store(key, bi ? setBi(current, langOf(), esc(value)) : value);
+          });
+      }
+      addControl(box, 'Colour', 'input', item.color, value => store('color', value), 'color');
+      for(const [key,label] of [['showToken','Show token'], ['showCard','Show explanation card'], ['showLabel','Show label'], ['showTitle','Show title'], ['showDescription','Show explanation']]){
+        addControl(box, label, 'input', item[key] !== false, value => store(key, value), 'checkbox');
+      }
+      const actions = document.createElement('div');
+      actions.className = 'row wrap';
+      action(actions, 'Move up', () => changeOrder(index, index - 1)).disabled = index === 0;
+      action(actions, 'Move down', () => changeOrder(index, index + 1)).disabled = index === arr.length - 1;
+      action(actions, 'Remove module', () => {
+        modules(d, APP.S.current, true).splice(index, 1);
+        updateStage();
+        renderModules();
+      });
+      box.append(actions);
+      body.append(box);
+    });
+    action(body, '+ Add module', () => {
+      const saved = modules(d, APP.S.current, true);
+      saved.push({group:'custom',token:'',title:{en:'New module'},description:{en:''},color:colors.custom});
+      updateStage();
+      renderModules(saved.length - 1);
+    });
+  }
+  renderModules();
+};
+})();
 </script>
 </body>
 </html>
