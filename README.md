@@ -54,3 +54,18 @@ the existing image-record format. The tool skips existing files and does
 not modify slides. Remaining IDs require their matching source images.
 When both asset directories contain the same ID, the app uses the copy
 in `decks/_images`. The audit reports differing copies.
+
+### Shared slide library
+
+Keep the checkout together when opening `index.html`. The app loads the active
+region's Master, Success Stories, FAE content and referenced artwork from
+`shared-library/korea.js` or `shared-library/japan.js`, without a server. Use
+Git to update those files. Change a record's `publishedRevision` when editing it
+in Git so the browser can distinguish the incoming revision. Existing browser
+edits are retained as local drafts. Browser changes do not push to GitHub.
+
+Connect your outside-the-checkout KR or JP folder for real accounts and project
+progress. The bundled KR and JP example folders are for simulation. Existing
+customer-specific decks can contain project progress and stay in their existing
+local workspace. Neither Git pull nor the application deletes existing local
+copies of the shared library.
