@@ -38,3 +38,19 @@ workspace.
 The fixture includes a fictional account, project, history event, master,
 customer deck, FAE reference and success story in each workspace. Background
 sync and private workspace migrations require separate on-device verification.
+
+## Repairing images from an older local installation
+
+Keep the original HTML and both workspace folders on the local computer.
+Close the app before running the tool. With Windows PowerShell, run an audit
+from the program checkout:
+
+```powershell
+.\tools\Repair-LocalImages.ps1 -PrivateRoot "$env:USERPROFILE\Desktop\Sales_station_private" -OldProgram "$env:USERPROFILE\Desktop\Sales_station_original_program_backup.html" | Format-List
+```
+
+Add `-Apply` to copy recoverable originals to the private workspace using
+the existing image-record format. The tool skips existing files and does
+not modify slides. Remaining IDs require their matching source images.
+When both asset directories contain the same ID, the app uses the copy
+in `decks/_images`. The audit reports differing copies.
