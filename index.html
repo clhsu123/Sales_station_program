@@ -2222,8 +2222,7 @@ const S = APP.S = { cases: [], images: new Map(), meta: {}, current: null, sel: 
 APP.getCase = id => S.cases.find(c => c.id === id);
 APP.imgSrc = function(ref){
   if(!ref) return '';
-  if(ref.startsWith('a:')) return ASSETS[ref.slice(2)] || S.images.get(ref.slice(2)) || '';
-  if(ref.startsWith('u:')) return S.images.get(ref.slice(2)) || ASSETS[ref.slice(2)] || '';
+  if(ref.startsWith('a:') || ref.startsWith('u:')) return S.images.get(ref.slice(2)) || ASSETS[ref.slice(2)] || '';
   return ref;
 };
 const imgSrc = APP.imgSrc;
@@ -6714,24 +6713,30 @@ const FS = APP.FS = {
         else if(fu > bu){ Object.assign(c, f); await DB.put('cases', c); loaded++; }
         else { await this.write(this.casePath(c), c); wrote++; } }
       for(const f of files.values()){ if(f.deleted) continue; S.cases.push(f); await DB.put('cases', f); loaded++; }
-      // images: union, one file each
-      const imgFiles = new Set((await this.list('decks/_images')).map(e => e.name.replace(/\.json$/, '')));
-      for(const [id, data] of S.images) if(!imgFiles.has(id)){ await this.write(this.imgPath(id), { id, name:(S.imageNames || {})[id] || '', data }); wrote++; }
-      for(const id of imgFiles) if(!S.images.has(id)){ const r = await this.readJSON(this.imgPath(id)); if(r && r.data){ S.images.set(id, r.data); (S.imageNames = S.imageNames || {})[id] = r.name; await DB.put('images', { id, data:r.data, name:r.name }); loaded++; } }
-      // success-story assets live with the stories, not in decks/_images
-      const storyAssets = await this.list('stories/assets');
-      for(const e of storyAssets){
-        if(e.kind !== 'file' || !e.name.endsWith('.json') || e.name.startsWith('_')) continue;
-        const r = await this.readJSON('stories/assets/' + e.name);
-        if(!r || !r.data) continue;
-        const id = r.id || e.name.replace(/\.json$/, '');
-        if(!S.images.has(id)){
-          S.images.set(id, r.data); (S.imageNames = S.imageNames || {})[id] = r.name || id;
-          const A = window.ANDES_ASSETS = window.ANDES_ASSETS || {}; A[id] = r.data;
-          await DB.put('images', { id, data:r.data, name:r.name || id }); loaded++;
-        } else {
-          const A = window.ANDES_ASSETS = window.ANDES_ASSETS || {}; if(!A[id]) A[id] = S.images.get(id);
+      // Read both asset stores before writing browser-only images to disk.
+      const diskImages = new Map();
+      for(const directory of ['decks/_images', 'stories/assets']){
+        for(const entry of await this.list(directory)){
+          if(entry.kind !== 'file' || !entry.name.endsWith('.json') || entry.name.startsWith('_')) continue;
+          const record = await this.readJSON(directory + '/' + entry.name);
+          if(!record || typeof record.data !== 'string' || !record.data) continue;
+          const id = record.id || entry.name.slice(0, -5);
+          // Decks is the canonical store for a previously duplicated ID.
+          if(!diskImages.has(id)) diskImages.set(id, { id, data:record.data, name:record.name || id });
         }
+      }
+      for(const [id, record] of diskImages){
+        if(S.images.get(id) === record.data && (S.imageNames || {})[id] === record.name) continue;
+        await DB.put('images', record);
+        S.images.set(id, record.data);
+        (S.imageNames = S.imageNames || {})[id] = record.name;
+        loaded++;
+      }
+      for(const [id, data] of S.images){
+        if(diskImages.has(id)) continue;
+        const path = this.imgPath(id);
+        if(await this.read(path) != null) continue;
+        await this.write(path, { id, name:(S.imageNames || {})[id] || '', data }); wrote++;
       }
       // tracker
       if(APP.TR) { const r = await APP.TR.syncWithFolder(fresh); wrote += r.wrote; loaded += r.loaded; }
@@ -6739,7 +6744,7 @@ const FS = APP.FS = {
       for(const x of conflicts) await this.conflictDialog(x.local, x.file);
       await this.markSynced(); await this.dailyBackup();
       if(!opts.silent && (wrote || loaded) && settings) APP.toast(T2(`Folder synced: ${loaded} loaded, ${wrote} written.`, `폴더 동기화를 마쳤습니다. 불러옴 ${loaded}건, 저장 ${wrote}건입니다.`));
-      APP.refresh && S.view !== 'editor' && APP.refresh();
+      if(APP.refresh) APP.refresh();
       return { ok:true, wrote, loaded };
     } catch(e){ console.error('sync', e); if(this.state !== 'perm') this.setState('err', { err: e.message || String(e) }); return { ok:false, error:e }; }
     finally { this.syncing = false; this.paint(); }
